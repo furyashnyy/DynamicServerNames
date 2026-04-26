@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>DynamicServerNames</RootNamespace>
+    <AssemblyName>DynamicServerNames</AssemblyName>
+    <Product>DynamicServerNames</Product>
+    <Authors>furyashnyy</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExMod.Exiled" Version="9.13.2" />
+  </ItemGroup>
+</Project>
