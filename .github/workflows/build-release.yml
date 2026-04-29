@@ -1,0 +1,41 @@
+name: build-and-release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore
+        run: dotnet restore DynamicServerNames/DynamicServerNames.csproj
+
+      - name: Build Debug
+        run: msbuild DynamicServerNames/DynamicServerNames.csproj /p:Configuration=Debug
+
+      - name: Build Release
+        run: msbuild DynamicServerNames/DynamicServerNames.csproj /p:Configuration=Release
+
+      - name: Create release with DLLs
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }}
+          generate_release_notes: true
+          files: |
+            DynamicServerNames/bin/Debug/net48/*.dll
+            DynamicServerNames/bin/Release/net48/*.dll

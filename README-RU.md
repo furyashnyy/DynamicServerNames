@@ -1,17 +1,26 @@
 # DynamicServerNames
+[🇺🇸](README.md) | [🇷🇺](README-RU.md)
 
-Плагин для EXILED, который по таймеру меняет имя сервера в браузере и поддерживает rich text SCP:SL.
+Плагин для EXILED, который по таймеру меняет имя сервера в браузере и поддерживает плейсхолдеры для живых данных.
 
-## Что делает плагин
+Репозиторий: [github.com/furyashnyy/DynamicServerNames](https://github.com/furyashnyy/DynamicServerNames)
 
-DynamicServerNames меняет `Server.Name` каждые `rotation_interval` секунд через coroutine EXILED. Каждый кадр поддерживает плейсхолдеры и rich text SCP:SL, так что можно сделать аккуратное имя сервера с цветами, жирным текстом и центровкой.
+Discord: [discord.gg/aapjvcvd9m](https://discord.gg/aapjvcvd9m)
+
+## Возможности
+
+- Ротация `Server.Name` по таймеру.
+- Плейсхолдеры для тикрейта, времени раунда, игроков, админов и ссылок.
+- Центровка через align или визуальная центровка пробелами.
+- Режим browser-safe для чистого отображения в списке серверов.
+- Автовосстановление конфига, если файл пустой.
 
 ## Установка
 
 1. Установите поддержку таргетинга .NET Framework 4.8.
 2. Восстановите зависимости командой `dotnet restore`.
 3. Соберите плагин командой `dotnet build DynamicServerNames/DynamicServerNames.csproj`.
-4. Скопируйте DLL из `DynamicServerNames/bin/Debug/net48/DynamicServerNames.dll` в папку плагинов EXILED.
+4. Скопируйте `DynamicServerNames/bin/Debug/net48/DynamicServerNames.dll` в папку плагинов EXILED.
 5. Запустите сервер один раз, чтобы EXILED создал конфиг.
 
 Путь конфига по умолчанию:
@@ -20,9 +29,9 @@ DynamicServerNames меняет `Server.Name` каждые `rotation_interval` �
 
 Если файл пустой, плагин пересоздаст его с рабочими значениями при загрузке.
 
-## Настройка конфига
+## Быстрый пример конфига
 
-Все строковые значения с пробелами и rich text-тегами пишите в кавычках.
+Строки с пробелами и тегами пишите в кавычках.
 
 ```yaml
 is_enabled: true
@@ -30,52 +39,76 @@ debug: true
 
 server_name: "My SCP:SL Server"
 rotation_interval: 5
-center_text: true
+auto_prepend_server_name: false
+
+center_text: false
+use_align_tag: false
+browser_safe_formatting: true
+center_width: 64
+
+append_hidden_name: false
+hidden_name: ""
 
 links:
-  - "discord.gg/aapjvcvd9m:gray"
-  - ""
+  - "discord.gg/aapjvcvd9m"
+  - "eklmn.arnos.dev"
   - ""
   - ""
   - ""
 
 frames:
-  - "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#00FF00>[TPS: {tickrate}]</color>  [Game: {game_time}]  [Players: {players}/{max_players}]  [Staff: {admins}]"
-  - "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#AAAAAA>Админы: {admins}</color> | {links}"
+  - "{server_name} | TPS: {tickrate} | {game_time}"
+  - "{server_name} | {players}/{max_players} | {links}"
 ```
 
-### Значения полей
+## Значения полей
 
-`server_name` - базовое имя сервера для `{server_name}`. Пример: `"My SCP:SL Server"`.
+`is_enabled` включает или выключает плагин.
 
-`rotation_interval` - интервал между кадрами в секундах. Значения меньше `1` автоматически станут `1`.
+`debug` включает логирование кадров.
 
-`center_text` - если включено, каждый кадр будет обёрнут в `<align="center">...</align>`.
+`server_name` базовое имя для `{server_name}`.
 
-`links` - список до 5 строк в формате `url:color`.
-- Пустые строки игнорируются.
-- Если цвет `none`, он считается как `gray`.
-- Пример: `"discord.gg/aapjvcvd9m:gray"`.
+`rotation_interval` интервал между кадрами в секундах. Значения меньше `1` становятся `1`.
 
-`frames` - список сообщений для вращения. Каждый элемент должен быть строкой в кавычках. Можно использовать теги Unity rich text, например `<color=#RRGGBB>`, `<b>` и переносы строк через `\n`.
+`auto_prepend_server_name` добавляет `{server_name}` в кадры, где его нет.
+
+`center_text` включает центровку. Поведение зависит от `use_align_tag` и `center_width`.
+
+`use_align_tag` добавляет `<align="center">...</align>`, если `browser_safe_formatting` выключен.
+
+`browser_safe_formatting` удаляет rich text-теги и отключает скрытое имя. Рекомендуется для списка серверов.
+
+`center_width` целевая видимая ширина для визуальной центровки в browser-safe режиме.
+
+`append_hidden_name` добавляет невидимое имя через `<size=0>...</size>`, если browser-safe режим выключен.
+
+`hidden_name` текст для скрытого имени. Пустое значение использует `server_name`.
+
+`links` список до 5 элементов. Поддерживаемые форматы:
+- `url` (без цвета)
+- `url:color` (цвет применяется, если browser-safe выключен)
+- `url:none` или `url:null` (без цвета)
+
+`frames` список сообщений. Используйте строки в кавычках и `\n` для переноса строк. Rich text доступен только при `browser_safe_formatting: false`.
 
 ## Плейсхолдеры
 
 `{server_name}` - значение из `server_name`.
 
-`{tickrate}` - текущий tickrate сервера, округлённый до одной десятичной.
+`{tickrate}` - текущий tickrate, одна десятичная.
 
-`{game_time}` - время раунда в формате `MM:SS`.
+`{game_time}` - время раунда `MM:SS`.
 
 `{players}` - текущее количество игроков.
 
-`{max_players}` - максимальное количество слотов сервера.
+`{max_players}` - максимум слотов.
 
-`{admins}` - количество игроков с доступом Remote Admin.
+`{admins}` - количество игроков с Remote Admin доступом.
 
-`{links}` - все непустые ссылки через ` | ` без хвостового разделителя.
+`{links}` - все непустые ссылки через ` | `.
 
-`{link1}`..`{link5}` - отдельные элементы списка `links`.
+`{link1}`..`{link5}` - отдельные элементы `links`.
 
 ## Сборка
 
@@ -84,4 +117,6 @@ dotnet restore
 dotnet build DynamicServerNames/DynamicServerNames.csproj
 ```
 
-Собранная DLL будет в `bin/Debug/net48/`.
+Выходные DLL:
+- `DynamicServerNames/bin/Debug/net48/DynamicServerNames.dll`
+- `DynamicServerNames/bin/Release/net48/DynamicServerNames.dll`

@@ -233,7 +233,7 @@ namespace DynamicServerNames
         private static bool TryParseTextLink(string rawText, out string url, out string color)
         {
             url = string.Empty;
-            color = "gray";
+            color = string.Empty;
 
             if (string.IsNullOrWhiteSpace(rawText))
                 return false;
@@ -254,7 +254,7 @@ namespace DynamicServerNames
                 return false;
 
             url = left;
-            color = string.IsNullOrWhiteSpace(right) ? "gray" : right;
+            color = right;
             return true;
         }
 
@@ -266,6 +266,10 @@ namespace DynamicServerNames
                 return string.Empty;
 
             string normalizedColor = NormalizeColor(color);
+
+            if (string.IsNullOrWhiteSpace(normalizedColor))
+                return trimmedUrl;
+
             return $"<color={normalizedColor}>{trimmedUrl}</color>";
         }
 
@@ -274,10 +278,13 @@ namespace DynamicServerNames
             string normalized = (color ?? string.Empty).Trim();
 
             if (string.IsNullOrWhiteSpace(normalized))
-                return "gray";
+                return string.Empty;
 
             if (string.Equals(normalized, "none", StringComparison.OrdinalIgnoreCase))
-                return "gray";
+                return string.Empty;
+
+            if (string.Equals(normalized, "null", StringComparison.OrdinalIgnoreCase))
+                return string.Empty;
 
             return normalized;
         }
