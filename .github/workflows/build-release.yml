@@ -37,5 +37,4 @@ jobs:
           name: Build ${{ github.run_number }}
           generate_release_notes: true
           files: |
-            DynamicServerNames/bin/Debug/net48/*.dll
             DynamicServerNames/bin/Release/net48/*.dll
