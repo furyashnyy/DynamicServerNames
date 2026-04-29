@@ -14,13 +14,15 @@ The plugin updates `Server.Name` every `rotation_interval` seconds. Each frame s
 
 1. Install .NET Framework 4.8 developer targeting support.
 2. Restore dependencies with `dotnet restore`.
-3. Build the plugin with `dotnet build ServerNameChanger/ServerNameChanger.csproj`.
-4. Copy the resulting DLL from `ServerNameChanger/bin/Debug/net48/DynamicServerNames.dll` into your EXILED plugins folder.
+3. Build the plugin with `dotnet build DynamicServerNames/DynamicServerNames.csproj`.
+4. Copy the resulting DLL from `DynamicServerNames/bin/Debug/net48/DynamicServerNames.dll` into your EXILED plugins folder.
 5. Start the server once so EXILED generates the config file.
 
 Default config location:
 
 `%AppData%\EXILED\Configs\Plugins\DynamicServerNames\<server-port>.yml`
+
+If that file is empty, the plugin recreates it with valid defaults on load.
 
 ## Configuration guide
 
@@ -28,19 +30,22 @@ Use quoted strings for values that contain spaces, punctuation, or rich text tag
 
 ```yaml
 is_enabled: true
-debug: false
+debug: true
 
 server_name: "My SCP:SL Server"
 rotation_interval: 5
 center_text: true
 
-discord_url: "discord.gg/aapjvcvd9m"
-website_url: "github.com/furyashnyy/DynamicServerNames"
-donate_url: "example.com/donate"
+links:
+	- "discord.gg/aapjvcvd9m:gray"
+	- ""
+	- ""
+	- ""
+	- ""
 
 frames:
 	- "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#00FF00>[TPS: {tickrate}]</color>  [Game: {game_time}]  [Players: {players}/{max_players}]  [Staff: {admins}]"
-	- "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#00BFFF>[Discord: {discord}]</color>  <color=#00BFFF>[Website: {website}]</color>  <color=#FFD700>[Donate: {donate}]</color>"
+	- "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#AAAAAA>Admins: {admins}</color> | {links}"
 ```
 
 ### Field reference
@@ -55,7 +60,10 @@ frames:
 
 `center_text` wraps every resolved frame in `<align="center">...</align>` when enabled.
 
-`discord_url`, `website_url`, and `donate_url` should be plain text strings. You can use a domain, invite, or full URL depending on how you want the browser text to look.
+`links` is a list of up to 5 strings in `url:color` format.
+- Empty strings are ignored.
+- If the color is `none`, it is treated as `gray`.
+- Example: `"discord.gg/aapjvcvd9m:gray"`.
 
 `frames` is the rotating message list. Each item should be a quoted string. You can use Unity rich text tags such as `<color=#RRGGBB>`, `<b>`, and line breaks with `\n`.
 
@@ -73,17 +81,15 @@ frames:
 
 `{admins}` - Number of players with Remote Admin access.
 
-`{discord}` - Replaced with `discord_url`.
+`{links}` - All non-empty link entries joined by ` | `, without trailing separators.
 
-`{website}` - Replaced with `website_url`.
-
-`{donate}` - Replaced with `donate_url`.
+`{link1}`..`{link5}` - Individual link entries from the configured `links` list.
 
 ## Build
 
 ```bash
 dotnet restore
-dotnet build ServerNameChanger/ServerNameChanger.csproj
+dotnet build DynamicServerNames/DynamicServerNames.csproj
 ```
 
 The compiled DLL is placed under `bin/Debug/net48/` by default.

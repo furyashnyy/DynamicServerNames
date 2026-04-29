@@ -10,13 +10,15 @@ DynamicServerNames меняет `Server.Name` каждые `rotation_interval` �
 
 1. Установите поддержку таргетинга .NET Framework 4.8.
 2. Восстановите зависимости командой `dotnet restore`.
-3. Соберите плагин командой `dotnet build ServerNameChanger/ServerNameChanger.csproj`.
-4. Скопируйте DLL из `ServerNameChanger/bin/Debug/net48/DynamicServerNames.dll` в папку плагинов EXILED.
+3. Соберите плагин командой `dotnet build DynamicServerNames/DynamicServerNames.csproj`.
+4. Скопируйте DLL из `DynamicServerNames/bin/Debug/net48/DynamicServerNames.dll` в папку плагинов EXILED.
 5. Запустите сервер один раз, чтобы EXILED создал конфиг.
 
 Путь конфига по умолчанию:
 
 `%AppData%\EXILED\Configs\Plugins\DynamicServerNames\<порт-сервера>.yml`
+
+Если файл пустой, плагин пересоздаст его с рабочими значениями при загрузке.
 
 ## Настройка конфига
 
@@ -24,19 +26,22 @@ DynamicServerNames меняет `Server.Name` каждые `rotation_interval` �
 
 ```yaml
 is_enabled: true
-debug: false
+debug: true
 
 server_name: "My SCP:SL Server"
 rotation_interval: 5
 center_text: true
 
-discord_url: "discord.gg/aapjvcvd9m"
-website_url: "github.com/furyashnyy/DynamicServerNames"
-donate_url: "example.com/donate"
+links:
+  - "discord.gg/aapjvcvd9m:gray"
+  - ""
+  - ""
+  - ""
+  - ""
 
 frames:
   - "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#00FF00>[TPS: {tickrate}]</color>  [Game: {game_time}]  [Players: {players}/{max_players}]  [Staff: {admins}]"
-  - "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#00BFFF>[Discord: {discord}]</color>  <color=#00BFFF>[Website: {website}]</color>  <color=#FFD700>[Donate: {donate}]</color>"
+  - "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#AAAAAA>Админы: {admins}</color> | {links}"
 ```
 
 ### Значения полей
@@ -47,7 +52,10 @@ frames:
 
 `center_text` - если включено, каждый кадр будет обёрнут в `<align="center">...</align>`.
 
-`discord_url`, `website_url`, `donate_url` - обычные строки. Можно указывать ссылку, приглашение или домен.
+`links` - список до 5 строк в формате `url:color`.
+- Пустые строки игнорируются.
+- Если цвет `none`, он считается как `gray`.
+- Пример: `"discord.gg/aapjvcvd9m:gray"`.
 
 `frames` - список сообщений для вращения. Каждый элемент должен быть строкой в кавычках. Можно использовать теги Unity rich text, например `<color=#RRGGBB>`, `<b>` и переносы строк через `\n`.
 
@@ -65,17 +73,15 @@ frames:
 
 `{admins}` - количество игроков с доступом Remote Admin.
 
-`{discord}` - значение `discord_url`.
+`{links}` - все непустые ссылки через ` | ` без хвостового разделителя.
 
-`{website}` - значение `website_url`.
-
-`{donate}` - значение `donate_url`.
+`{link1}`..`{link5}` - отдельные элементы списка `links`.
 
 ## Сборка
 
 ```bash
 dotnet restore
-dotnet build ServerNameChanger/ServerNameChanger.csproj
+dotnet build DynamicServerNames/DynamicServerNames.csproj
 ```
 
 Собранная DLL будет в `bin/Debug/net48/`.
