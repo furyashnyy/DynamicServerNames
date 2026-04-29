@@ -1,8 +1,6 @@
 # DynamicServerNames
 [🇺🇸](README.md) | [🇷🇺](README-RU.md)
 
-![](https://komarev.com/ghpvc/?username=your-github-username)
-
 DynamicServerNames is an EXILED plugin for SCP: Secret Laboratory that rotates the server browser name on a timer and supports placeholders for live data.
 
 Repository: [github.com/furyashnyy/DynamicServerNames](https://github.com/furyashnyy/DynamicServerNames)
