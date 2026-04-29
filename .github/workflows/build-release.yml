@@ -50,21 +50,16 @@ jobs:
             git log -1 --pretty=format:"- %s (%an)"
           }
 
-          $notes = @"
-## Changes
-$log
-"@
+          $path = "release-notes.md"
+          Set-Content -Path $path -Value "## Changes" -Encoding utf8
+          Add-Content -Path $path -Value $log -Encoding utf8
 
           if ($prevTag) {
-            $notes += @"
-
-## Full Changelog
-https://github.com/${{ github.repository }}/compare/$prevTag...$tag
-"@
+            Add-Content -Path $path -Value "" -Encoding utf8
+            Add-Content -Path $path -Value "## Full Changelog" -Encoding utf8
+            Add-Content -Path $path -Value "https://github.com/${{ github.repository }}/compare/$prevTag...$tag" -Encoding utf8
           }
 
-          $path = "release-notes.md"
-          $notes | Out-File -FilePath $path -Encoding utf8
           "notes_path=$path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Create release with DLLs
