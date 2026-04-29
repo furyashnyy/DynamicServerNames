@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
@@ -24,17 +26,57 @@ jobs:
       - name: Restore
         run: dotnet restore DynamicServerNames/DynamicServerNames.csproj
 
-      - name: Build Debug
-        run: msbuild DynamicServerNames/DynamicServerNames.csproj /p:Configuration=Debug
-
       - name: Build Release
         run: msbuild DynamicServerNames/DynamicServerNames.csproj /p:Configuration=Release
+
+      - name: Generate release notes
+        id: notes
+        shell: pwsh
+        run: |
+          $run = [int]"${{ github.run_number }}"
+          $tag = "build-$run"
+          $prevTag = if ($run -gt 1) { "build-$($run - 1)" } else { $null }
+
+          if ($prevTag) {
+            git show-ref --tags $prevTag 2>$null
+            if ($LASTEXITCODE -ne 0) {
+              $prevTag = $null
+            }
+          }
+
+          $log = if ($prevTag) {
+            git log "$prevTag..HEAD" --pretty=format:"- %s (%an)"
+          } else {
+            git log -1 --pretty=format:"- %s (%an)"
+          }
+
+          $notes = @"
+## Changes
+$log
+"@
+
+          if ($prevTag) {
+            $notes += @"
+
+## Full Changelog
+https://github.com/${{ github.repository }}/compare/$prevTag...$tag
+"@
+          }
+
+          $path = "release-notes.md"
+          $notes | Out-File -FilePath $path -Encoding utf8
+          "notes_path=$path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Create release with DLLs
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
           name: Build ${{ github.run_number }}
-          generate_release_notes: true
+          body_path: ${{ steps.notes.outputs.notes_path }}
           files: |
-            DynamicServerNames/bin/Release/net48/*.dll
+            DynamicServerNames/bin/Release/net48/DynamicServerNames.dll
+
+      - name: Cleanup build outputs
+        if: always()
+        run: |
+          Remove-Item -Recurse -Force DynamicServerNames/bin, DynamicServerNames/obj

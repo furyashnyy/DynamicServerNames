@@ -10,6 +10,7 @@ namespace DynamicServerNames
     public sealed class Plugin : Exiled.API.Features.Plugin<Config>
     {
         private NameRotator? _nameRotator;
+        private bool _advertisementSent;
 
         /// <inheritdoc />
         public override string Author => "furyashnyy";
@@ -28,6 +29,7 @@ namespace DynamicServerNames
         {
             base.OnEnabled();
 
+            _advertisementSent = false;
             _nameRotator = new NameRotator(Config);
             ServerEvents.WaitingForPlayers += OnWaitingForPlayers;
             _nameRotator.Start();
@@ -57,6 +59,29 @@ namespace DynamicServerNames
         private void OnWaitingForPlayers()
         {
             _nameRotator?.Start();
+            PrintStartupAdvertisement();
+        }
+
+        private void PrintStartupAdvertisement()
+        {
+            if (_advertisementSent)
+                return;
+
+            _advertisementSent = true;
+
+            ConsoleColor previousColor = Console.ForegroundColor;
+            try
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("Thank you for using DynamicServerNames.");
+                Console.WriteLine("https://github.com/furyashnyy");
+                Console.WriteLine("https://discord.gg/aapjvcvd9m");
+                Console.WriteLine("https://t.me/furyashnyy");
+            }
+            finally
+            {
+                Console.ForegroundColor = previousColor;
+            }
         }
     }
 }
