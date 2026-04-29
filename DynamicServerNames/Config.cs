@@ -16,7 +16,7 @@ namespace DynamicServerNames
         /// <summary>
         /// Gets or sets a value indicating whether debug logging is enabled.
         /// </summary>
-        public bool Debug { get; set; } = true;
+        public bool Debug { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the base server name used by the {server_name} placeholder.
@@ -57,13 +57,13 @@ namespace DynamicServerNames
         public int CenterWidth { get; set; } = 64;
 
         /// <summary>
-        /// Gets or sets custom links in URL-to-color format.
-        /// Example item: "discord.gg/1234:gray".
+        /// Gets or sets custom links.
+        /// Example item: "discord.gg/1234".
         /// Empty string items are ignored.
         /// </summary>
         public List<string> Links { get; set; } = new List<string>
         {
-            "discord.gg/aapjvcvd9m:gray",
+            "discord.gg/aapjvcvd9m",
             string.Empty,
             string.Empty,
             string.Empty,
@@ -77,7 +77,7 @@ namespace DynamicServerNames
         {
             "<color=#00BFFF><b>Thanks for using DynamicServerNames</b></color>\n<color=#00BFFF>https://github.com/furyashnyy</color>\n<color=#00BFFF>https://discord.gg/aapjvcvd9m</color>\n<color=#00BFFF>https://t.me/furyashnyy</color>",
             "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#00FF00>[TPS: {tickrate}]</color>  [Game: {game_time}]  [Players: {players}/{max_players}]  [Staff: {admins}]",
-            "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n<color=#AAAAAA>{links}</color>",
+            "<color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n{links}",
             "<color=#FF4444><b>{server_name}</b></color>  <color=#AAAAAA>|</color>  <color=#00FF00>{players}</color><color=#AAAAAA>/</color><color=#FFFFFF>{max_players}</color> <color=#AAAAAA>players online</color>  <color=#FF9900>[Staff online: {admins}]</color>",
             "<color=#FF4444><b>{server_name}</b></color>  <color=#AAAAAA>Server TPS: </color><color=#00FF00>{tickrate}</color>  <color=#AAAAAA>|</color>  Round time: <color=#00BFFF>{game_time}</color>",
             "<b><color=#FF4444>{server_name}</color></b>  <color=#FFD700>★ Come play with us! ★</color>  <color=#AAAAAA>{players}/{max_players} players</color>  |  <color=#AAAAAA>Admins: {admins}</color>  |  {links}"

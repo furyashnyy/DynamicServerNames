@@ -22,7 +22,7 @@ namespace DynamicServerNames
         public override string Prefix => "DynamicServerNames";
 
         /// <inheritdoc />
-        public override Version Version => new Version(1, 0, 0);
+        public override Version Version => new Version(1, 0, 2);
 
         /// <inheritdoc />
         public override void OnEnabled()

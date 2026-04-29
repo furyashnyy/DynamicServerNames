@@ -102,7 +102,7 @@ namespace DynamicServerNames
                 "append_hidden_name: false\n" +
                 "hidden_name: \"\"\n" +
                 "links:\n" +
-                "  - \"discord.gg/aapjvcvd9m:gray\"\n" +
+                "  - \"discord.gg/aapjvcvd9m\"\n" +
                 "  - \"\"\n" +
                 "  - \"\"\n" +
                 "  - \"\"\n" +
@@ -118,7 +118,7 @@ namespace DynamicServerNames
                 "    <color=#00FF00>[TPS: {tickrate}]</color>  [Game: {game_time}]  [Players: {players}/{max_players}]  [Staff: {admins}]\n" +
                 "  - |-\n" +
                 "    <color=#FF4444><b>{server_name}</b></color> | <color=#00FF88>NoRules</color>\n" +
-                "    <color=#AAAAAA>{links}</color>\n" +
+                "    {links}\n" +
                 "  - |-\n" +
                 "    <color=#FF4444><b>{server_name}</b></color>  <color=#AAAAAA>|</color>  <color=#00FF00>{players}</color><color=#AAAAAA>/</color><color=#FFFFFF>{max_players}</color> <color=#AAAAAA>players online</color>  <color=#FF9900>[Staff online: {admins}]</color>\n" +
                 "  - |-\n" +

@@ -85,10 +85,7 @@ frames:
 
 `hidden_name` is the text used for hidden name append. Empty means `server_name`.
 
-`links` is a list of up to 5 items. Formats supported:
-- `url` (no color)
-- `url:color` (applies color when browser-safe formatting is false)
-- `url:none` or `url:null` (no color)
+`links` is a list of up to 5 items. Provide plain URLs.
 
 `frames` is the rotating message list. Use quoted strings and `\n` for new lines. Rich text tags are allowed only when `browser_safe_formatting` is false.
 

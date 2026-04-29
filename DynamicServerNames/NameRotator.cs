@@ -218,75 +218,15 @@ namespace DynamicServerNames
 
             foreach (string rawText in (_config.Links ?? new List<string>()).Take(5))
             {
-                if (!TryParseTextLink(rawText, out string textUrl, out string textColor))
+                string trimmed = (rawText ?? string.Empty).Trim();
+
+                if (string.IsNullOrWhiteSpace(trimmed))
                     continue;
 
-                if (_config.BrowserSafeFormatting)
-                    links.Add(textUrl);
-                else
-                    links.Add(FormatColoredLink(textUrl, textColor));
+                links.Add(trimmed);
             }
 
             return links.Where(link => !string.IsNullOrWhiteSpace(link)).Take(5).ToList();
-        }
-
-        private static bool TryParseTextLink(string rawText, out string url, out string color)
-        {
-            url = string.Empty;
-            color = string.Empty;
-
-            if (string.IsNullOrWhiteSpace(rawText))
-                return false;
-
-            string trimmed = rawText.Trim();
-            int separatorIndex = trimmed.LastIndexOf(':');
-
-            if (separatorIndex <= 0 || separatorIndex >= trimmed.Length - 1)
-            {
-                url = trimmed;
-                return true;
-            }
-
-            string left = trimmed.Substring(0, separatorIndex).Trim();
-            string right = trimmed.Substring(separatorIndex + 1).Trim();
-
-            if (string.IsNullOrWhiteSpace(left))
-                return false;
-
-            url = left;
-            color = right;
-            return true;
-        }
-
-        private static string FormatColoredLink(string url, string color)
-        {
-            string trimmedUrl = (url ?? string.Empty).Trim();
-
-            if (string.IsNullOrWhiteSpace(trimmedUrl))
-                return string.Empty;
-
-            string normalizedColor = NormalizeColor(color);
-
-            if (string.IsNullOrWhiteSpace(normalizedColor))
-                return trimmedUrl;
-
-            return $"<color={normalizedColor}>{trimmedUrl}</color>";
-        }
-
-        private static string NormalizeColor(string color)
-        {
-            string normalized = (color ?? string.Empty).Trim();
-
-            if (string.IsNullOrWhiteSpace(normalized))
-                return string.Empty;
-
-            if (string.Equals(normalized, "none", StringComparison.OrdinalIgnoreCase))
-                return string.Empty;
-
-            if (string.Equals(normalized, "null", StringComparison.OrdinalIgnoreCase))
-                return string.Empty;
-
-            return normalized;
         }
 
         private static string GetLinkValue(IReadOnlyList<string> links, int index, string fallback)
